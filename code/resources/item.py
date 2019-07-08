@@ -21,19 +21,6 @@ class Item(Resource):
             return item.json()
         return {'message': 'Item not found'}, 404
 
-    # @classmethod
-    # def find_by_name(cls, name):
-    #     connection = sqlite3.connect('data.db')
-    #     cursor = connection.cursor()
-    #
-    #     query = "SELECT * FROM {table} WHERE name=?".format(table=cls.TABLE_NAME)
-    #     result = cursor.execute(query, (name,))
-    #     row = result.fetchone()
-    #     connection.close()
-    #
-    #     if row:
-    #         return {'item': {'name': row[0], 'price': row[1]}}
-
     def post(self, name):
         if ItemModel.find_by_name(name):
             return {'message': "An item with name '{}' already exists.".format(name)}
@@ -76,22 +63,20 @@ class Item(Resource):
     def put(self, name):
         data = Item.parser.parse_args()
         item = ItemModel.find_by_name(name)
-        # updated_item = {'name': name, 'price': data['price']}
+        updated_item = ItemModel(name , data["price"])
         if item is None:
             try:
-                new_item = ItemModel(name , data["price"])
-                new_item.insert()
+                updated_item.insert()
             except:
                 return {"message": "An error occurred inserting the item."}
         else:
             try:
-                updated_item = ItemModel(name , data["price"])
                 updated_item.update()
             except:
                 raise
                 return {"message": "An error occurred updating the item."}
         # return updated_item
-        return {"message":"updating done!"}
+        return updated_item.json()
 
     # @classmethod
     # def update(cls, item):

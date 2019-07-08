@@ -1,5 +1,6 @@
 import sqlite3
 from flask_restful import Resource, reqparse
+from models.userModel import User
 
 class UserRegister(Resource):
     TABLE_NAME = 'users'

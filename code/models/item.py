@@ -18,10 +18,6 @@ class ItemModel:
         connection.close()
         if row:
             return cls(*row)
-        # if row:
-        #     return {'item': {'name': row[0], 'price': row[1]}}
-
-    # @classmethod
     def insert(self):
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
@@ -33,7 +29,6 @@ class ItemModel:
         connection.commit()
         connection.close()
 
-    # @classmethod
     def update(self):
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()

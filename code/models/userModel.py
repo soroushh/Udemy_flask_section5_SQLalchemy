@@ -1,3 +1,4 @@
+import sqlite3
 class User():
     TABLE_NAME = 'users'
 
