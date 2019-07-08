@@ -93,6 +93,7 @@ class Item(Resource):
 class ItemList(Resource):
     TABLE_NAME = 'items'
 
+    @jwt_required()
     def get(self):
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
