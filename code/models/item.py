@@ -44,3 +44,4 @@ class ItemModel(db.Model):
 
         connection.commit()
         connection.close()
+        
