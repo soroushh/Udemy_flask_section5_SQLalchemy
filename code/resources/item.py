@@ -26,7 +26,7 @@ class Item(Resource):
             return {'message': "An item with name '{}' already exists.".format(name)}
 
         data = Item.parser.parse_args()
-        item = ItemModel(name, data["price"])
+        item = ItemModel(None,name, data["price"])
 
         try:
             item.save_to_db()
@@ -35,29 +35,8 @@ class Item(Resource):
 
         return item.json()
 
-    # @classmethod
-    # def insert(cls, item):
-    #     connection = sqlite3.connect('data.db')
-    #     cursor = connection.cursor()
-    #
-    #     query = "INSERT INTO {table} VALUES(?, ?)".format(table=cls.TABLE_NAME)
-    #     cursor.execute(query, (item['name'], item['price']))
-    #
-    #     connection.commit()
-    #     connection.close()
-
     # @jwt_required()
     def delete(self, name):
-        # connection = sqlite3.connect('data.db')
-        # cursor = connection.cursor()
-        #
-        # query = "DELETE FROM {table} WHERE name=?".format(table=self.TABLE_NAME)
-        # cursor.execute(query, (name,))
-        #
-        # connection.commit()
-        # connection.close()
-        #
-        # return {'message': 'Item deleted'}
         item = ItemModel.find_by_name(name)
         if item:
             item.delete_from_db()
@@ -69,7 +48,7 @@ class Item(Resource):
         item = ItemModel.find_by_name(name)
         if item is None:
             try:
-                item = ItemModel(name , data["price"])
+                item = ItemModel(None,name , data["price"])
             except:
                 return {"message": "An error occurred inserting the item."}
         else:
@@ -82,31 +61,12 @@ class Item(Resource):
         item.save_to_db()
         return item.json()
 
-    # @classmethod
-    # def update(cls, item):
-    #     connection = sqlite3.connect('data.db')
-    #     cursor = connection.cursor()
-    #
-    #     query = "UPDATE {table} SET price=? WHERE name=?".format(table=cls.TABLE_NAME)
-    #     cursor.execute(query, (item['price'], item['name']))
-    #
-    #     connection.commit()
-    #     connection.close()
-
-
 class ItemList(Resource):
     TABLE_NAME = 'items'
 
-    # @jwt_required()
+    @jwt_required()
     def get(self):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
-
-        query = "SELECT * FROM {table}".format(table=self.TABLE_NAME)
-        result = cursor.execute(query)
         items = []
-        for row in result:
-            items.append({'name': row[0], 'price': row[1]})
-        connection.close()
-
-        return {'items': items}
+        for item in ItemModel.find_all():
+            items.append(item.json())
+        return {"items":items}
