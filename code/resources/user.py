@@ -16,6 +16,10 @@ class UserRegister(Resource):
                         required=True,
                         help="This field cannot be left blank!"
                         )
+    parser.add_argument('new_password',
+                        type=str
+                        )
+
 
     def post(self):
         data = UserRegister.parser.parse_args()
@@ -33,3 +37,9 @@ class UserRegister(Resource):
         connection.close()
 
         return {"message": "User created successfully."}, 201
+    def delete(self):
+        data = UserRegister.parser.parse_args()
+        return(User.delete_from_db(data["username"], data["password"]))
+    def put(self):
+        data = UserRegister.parser.parse_args()
+        return(User.update_in_databse(data["username"], data["password"], data["new_password"]))

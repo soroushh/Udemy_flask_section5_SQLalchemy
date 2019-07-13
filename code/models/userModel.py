@@ -14,35 +14,32 @@ class User(db.Model):
 
     @classmethod
     def find_by_username(cls, username):
-        # connection = sqlite3.connect('data.db')
-        # cursor = connection.cursor()
-        #
-        # query = "SELECT * FROM {table} WHERE username=?".format(table=cls.TABLE_NAME)
-        # result = cursor.execute(query, (username,))
-        # row = result.fetchone()
-        # if row:
-        #     user = cls(*row)
-        # else:
-        #     user = None
-        #
-        # connection.close()
-        # return user
         return(cls.query.filter_by(username = username).first())
 
 
     @classmethod
     def find_by_id(cls, _id):
-        # connection = sqlite3.connect('data.db')
-        # cursor = connection.cursor()
-        #
-        # query = "SELECT * FROM {table} WHERE id=?".format(table=cls.TABLE_NAME)
-        # result = cursor.execute(query, (_id,))
-        # row = result.fetchone()
-        # if row:
-        #     user = cls(*row)
-        # else:
-        #     user = None
-        #
-        # connection.close()
-        # return user
         return(cls.query.filter_by(id=_id).first())
+
+    @classmethod
+    def delete_from_db(cls, username ,password):
+        current_user = cls.query.filter_by(username = username).first()
+        if current_user == None:
+            return {"message":"The username with current username does not exist."}
+        else:
+            if current_user.password == password:
+                db.session.delete(current_user)
+                db.session.commit()
+                return {"message":"user completely deleted."}
+            else:
+                return {"message":"The password is wrong."}
+    @classmethod
+    def update_in_databse(cls, username , password, new_password):
+        user = cls.query.filter_by(username=username).filter_by(password=password).first()
+        if user:
+            user.password = new_password
+            db.session.add(user)
+            db.session.commit()
+            return{"message":"username successfully updated."}
+        else:
+            return {"message":"such user name does not exist."}
